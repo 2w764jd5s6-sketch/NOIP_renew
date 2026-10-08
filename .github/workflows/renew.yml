@@ -1,0 +1,22 @@
+name: NoIP Renew
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # 支持手动点击测试
+  schedule:
+    # UTC 每周五 09:00 → 北京时间17点执行
+    - cron: '0 9 * * 5'
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run renew script
+        run: python noip-renew.py -u "${{ secrets.NOIP_USERNAME }}" -p "${{ secrets.NOIP_PASSWORD }}" -d
